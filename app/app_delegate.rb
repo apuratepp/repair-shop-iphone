@@ -1,11 +1,13 @@
 class AppDelegate
   def application(application, didFinishLaunchingWithOptions:launchOptions)
-    p "ieee"
 
-    BubbleWrap::HTTP.get("http://repair-shop.dev/orders.json?auth_token=yLVRSLTjXHssxRq5vJuW") do |response|
-      @data = BW::JSON.parse(response.body.to_str)
-      p @data
-    end
+    # Order.all do |orders|
+    #   p orders
+    # end
+    @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds)
+    @orders_controller = OrdersController.alloc.initWithNibName(nil, bundle:nil)
+    @window.rootViewController = UINavigationController.alloc.initWithRootViewController(@orders_controller)
+    @window.makeKeyAndVisible
 
     true
   end
