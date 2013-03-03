@@ -1,14 +1,19 @@
 class EditOrderController < UIViewController
-  attr_accessor :id
+  attr_accessor :order_id
 
   def viewDidLoad
     super
 
-    @orders_controller = OrdersController.alloc.initWithNibName(nil, bundle:nil)
-    doneButton = UIBarButtonItem.alloc.initWithTitle("Save", style: UIBarButtonItemStyleDone, target:@orders_controller, action:'added')
-    self.navigationItem.rightBarButtonItem = doneButton
+    #@orders_controller = OrdersController.alloc.initWithNibName(nil, bundle:nil)
 
     self.title ||= "Loading Order..."
+
+    doneButton = UIBarButtonItem.alloc.initWithTitle("Save", 
+                      style: UIBarButtonItemStyleDone, 
+                      target:self, 
+                      action:'save')
+    
+    self.navigationItem.rightBarButtonItem = doneButton
 
     @table = UITableView.alloc.initWithFrame(self.view.bounds, style:UITableViewStyleGrouped)
     @table.autoresizingMask = UIViewAutoresizingFlexibleHeight
@@ -19,19 +24,29 @@ class EditOrderController < UIViewController
     @table.dataSource = self
     @table.delegate = self
 
-    # p "EditOrderController #{@id} :D"
+    @dataLabels = ['ID', 'Email', 'Created at']
     @data ||= []
-    Order.create do |order|
-      @data = [order.id, order.email, order.created_at]
-      self.title = "Order"
-      @table.reloadData
+
+    if @order_id.nil?
+      Order.create do |order|
+        @data = [order.id, order.email, order.created_at]
+        self.title = "Order ##{order.id}"
+        @table.reloadData
+      end
+    else
+      Order.find(@order_id) do |order|
+        @order = order
+        @data = [order.id, order.email, order.created_at]        
+        self.title = "Order ##{order.id}"
+        @table.reloadData
+      end
     end
   end
   def tableView(tableView, numberOfRowsInSection: section)
     @data.count
   end
   def tableView(tableView, cellForRowAtIndexPath: indexPath)
-    @dataLabels = ['ID', 'Email', 'Created at']
+    # http://stackoverflow.com/questions/409259/having-a-uitextfield-in-a-uitableviewcell
     @reuseIdentifier ||= "CELL_IDENTIFIER"
 
     cell = tableView.dequeueReusableCellWithIdentifier(@reuseIdentifier)
@@ -42,16 +57,23 @@ class EditOrderController < UIViewController
     cell.accessoryType = UITableViewCellAccessoryNone;
     textField      = UITextField.alloc.initWithFrame(CGRectMake(110, 10, 185, 30))
     textField.textColor = UIColor.blackColor
+    # textField.backgroundColor = UIColor.whiteColor
     textField.adjustsFontSizeToFitWidth = true
     textField.text = @data[indexPath.row].to_s
     textField.setEnabled(true);
     # textField.keyboardType = UIKeyboardTypeEmailAddress;
-    cell.contentView.addSubview(textField)
 
     cell.textLabel.text   = @dataLabels[indexPath.row]    
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
+    cell.contentView.addSubview(textField)
+
     cell
   end
-
+  def save
+    @order.save do |order|
+      #@data = [order.id, order.email, order.created_at]
+      @table.reloadData
+    end
+  end
 end

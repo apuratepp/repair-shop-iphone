@@ -45,12 +45,13 @@ class OrdersController < UIViewController
     
     cell
   end
-  # def tableView(tableView, didSelectRowAtIndexPath: indexPath)
-  #   # http://stackoverflow.com/questions/9697770/push-new-view-on-clicking-table-cell-hows-that-possible
-  #   @actions_controller = ActionsController.alloc.initWithNibName(nil, bundle:nil)
-  #   @actions_controller.campaign_id = @data[indexPath.row]['campaign']['id']
-  #   self.navigationController.pushViewController(@actions_controller, animated: true)
-  # end
+  def tableView(tableView, didSelectRowAtIndexPath: indexPath)
+    # http://stackoverflow.com/questions/9697770/push-new-view-on-clicking-table-cell-hows-that-possible
+    order = @data[indexPath.row]
+    @edit_order_controller = EditOrderController.alloc.initWithNibName(nil, bundle:nil)
+    @edit_order_controller.order_id = order.id
+    self.navigationController.pushViewController(@edit_order_controller, animated: true)
+  end
   def new
     @edit_order_controller = EditOrderController.alloc.initWithNibName(nil, bundle:nil)
     self.navigationController.pushViewController(@edit_order_controller, animated: true)
