@@ -14,6 +14,8 @@ class EditOrderController < UIViewController
     @table.autoresizingMask = UIViewAutoresizingFlexibleHeight
     self.view.addSubview(@table)
 
+    # @table.setEditing(true, animated:true)
+
     @table.dataSource = self
     @table.delegate = self
 
@@ -29,23 +31,26 @@ class EditOrderController < UIViewController
     @data.count
   end
   def tableView(tableView, cellForRowAtIndexPath: indexPath)
+    @dataLabels = ['ID', 'Email', 'Created at']
     @reuseIdentifier ||= "CELL_IDENTIFIER"
 
     cell = tableView.dequeueReusableCellWithIdentifier(@reuseIdentifier)
     cell ||= UITableViewCell.alloc.initWithStyle(
-                UITableViewCellStyleSubtitle, 
+                UITableViewCellStyleDefault, 
                 reuseIdentifier: @reuseIdentifier)
 
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    textField      = UITextField.alloc.initWithFrame(CGRectMake(110, 10, 185, 30))
+    textField.textColor = UIColor.blackColor
+    textField.adjustsFontSizeToFitWidth = true
+    textField.text = @data[indexPath.row].to_s
+    textField.setEnabled(true);
+    # textField.keyboardType = UIKeyboardTypeEmailAddress;
+    cell.contentView.addSubview(textField)
 
-    # p @data
-    # p indexPath.row
-    # p @data[indexPath.row]
+    cell.textLabel.text   = @dataLabels[indexPath.row]    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
-    cell.textLabel.text = "#{@data[indexPath.row]}"
-    # cell.textLabel.text       = @data[indexPath.row]
-    # cell.detailTextLabel.text = order.created_at
-    
     cell
   end
 
