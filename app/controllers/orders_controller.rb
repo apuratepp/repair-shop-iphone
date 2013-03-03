@@ -2,7 +2,7 @@ class OrdersController < UIViewController
   def viewDidLoad
     super
 
-    rightButton = UIBarButtonItem.alloc.initWithTitle("New Order", style: UIBarButtonItemStyleBordered, target:self, action:'new')
+    rightButton = UIBarButtonItem.alloc.initWithTitle("Add", style: UIBarButtonItemStyleBordered, target:self, action:'new')
     self.navigationItem.rightBarButtonItem = rightButton
 
     self.title ||= "Loading Orders..."
