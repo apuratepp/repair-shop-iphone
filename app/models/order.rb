@@ -30,7 +30,7 @@ class Order
       block.call(orders)
     end
   end
-  
+
   def self.find(id, &block)
     BW::HTTP.get("http://repair-shop.dev/orders/#{id}.json", {}) do |response|
       json = BW::JSON.parse(response.body.to_str)
